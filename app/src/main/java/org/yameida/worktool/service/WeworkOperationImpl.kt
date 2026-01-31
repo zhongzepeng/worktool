@@ -4,7 +4,10 @@ import android.graphics.Bitmap
 import android.view.accessibility.AccessibilityNodeInfo
 import org.yameida.worktool.Constant
 import org.yameida.worktool.model.WeworkMessageBean
-import com.github.yoojia.qrcode.qrcode.QRCodeDecoder
+import com.google.zxing.BinaryBitmap
+import com.google.zxing.RGBLuminanceSource
+import com.google.zxing.common.HybridBinarizer
+import com.google.zxing.qrcode.QRCodeReader
 import com.blankj.utilcode.util.*
 import com.lzy.okgo.OkGo
 import org.yameida.worktool.model.ExecCallbackBean
@@ -3208,8 +3211,16 @@ object WeworkOperationImpl {
                                 LogUtils.d("找到最新保存二维码图片: $fileTime")
                                 try {
                                     val bitmap = ImageUtils.bytes2Bitmap(file.readBytes())
-                                    val mDecoder = QRCodeDecoder.Builder().build()
-                                    val qrcode = mDecoder.decode(bitmap)
+                                    // Use ZXing to decode QR code
+                                    val width = bitmap.width
+                                    val height = bitmap.height
+                                    val pixels = IntArray(width * height)
+                                    bitmap.getPixels(pixels, 0, width, 0, 0, width, height)
+                                    val source = RGBLuminanceSource(width, height, pixels)
+                                    val binaryBitmap = BinaryBitmap(HybridBinarizer(source))
+                                    val reader = QRCodeReader()
+                                    val result = reader.decode(binaryBitmap)
+                                    val qrcode = result.text
                                     LogUtils.d("group: $groupName qrcode: $qrcode")
                                     val weworkMessageBean = WeworkMessageBean()
                                     weworkMessageBean.type = WeworkMessageBean.GET_GROUP_QRCODE
