@@ -43,8 +43,9 @@ dependencies {
     api 'com.teprinciple:updateapputilsx:2.3.0'
     //okgo
     api 'com.lzy.net:okgo:3.0.4'
-    //qrcode
-    api 'com.github.yoojia:next-qrcode:2.0-2'
+    //qrcode - Using ZXing instead of next-qrcode due to JitPack issues
+    api 'com.google.zxing:core:3.5.3'
+    api 'com.journeyapps:zxing-android-embedded:4.3.0'
     //QMUI
     api 'com.qmuiteam:qmui:2.0.0-alpha10'
     //recyclerview
